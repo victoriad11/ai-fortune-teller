@@ -1,21 +1,17 @@
-import type { FortuneMode, ThemeType } from '../types';
-import { CLASSIC_FORTUNES, AI_SYSTEM_PROMPTS } from '../constants/fortunes';
+import type { FortuneMode } from '../types';
+import { CLASSIC_FORTUNES, AI_SYSTEM_PROMPT } from '../constants/fortunes';
 
-export const getClassicFortune = (theme: ThemeType): string => {
-  const fortunes = CLASSIC_FORTUNES[theme];
-  const randomIndex = Math.floor(Math.random() * fortunes.length);
-  return fortunes[randomIndex];
+export const getClassicFortune = (): string => {
+  const randomIndex = Math.floor(Math.random() * CLASSIC_FORTUNES.length);
+  return CLASSIC_FORTUNES[randomIndex];
 };
 
-export const getAIFortune = async (
-  question: string,
-  theme: ThemeType
-): Promise<string> => {
+export const getAIFortune = async (question: string): Promise<string> => {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
   if (!apiKey) {
     console.warn('OpenAI API key not found, falling back to classic fortune');
-    return getClassicFortune(theme);
+    return getClassicFortune();
   }
 
   try {
@@ -30,7 +26,7 @@ export const getAIFortune = async (
         messages: [
           {
             role: 'system',
-            content: AI_SYSTEM_PROMPTS[theme],
+            content: AI_SYSTEM_PROMPT,
           },
           {
             role: 'user',
@@ -47,20 +43,19 @@ export const getAIFortune = async (
     }
 
     const data = await response.json();
-    return data.choices[0]?.message?.content?.trim() || getClassicFortune(theme);
+    return data.choices[0]?.message?.content?.trim() || getClassicFortune();
   } catch (error) {
     console.error('Error fetching AI fortune:', error);
-    return getClassicFortune(theme);
+    return getClassicFortune();
   }
 };
 
 export const getFortune = async (
   mode: FortuneMode,
-  question: string,
-  theme: ThemeType
+  question: string
 ): Promise<string> => {
   if (mode === 'ai' && question.trim()) {
-    return getAIFortune(question, theme);
+    return getAIFortune(question);
   }
-  return getClassicFortune(theme);
+  return getClassicFortune();
 };

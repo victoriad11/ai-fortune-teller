@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, Fortune, FortuneMode, ThemeType } from '../types';
+import type { AppState, Fortune, FortuneMode } from '../types';
 
 interface AppStore {
   // UI State
@@ -9,9 +9,7 @@ interface AppStore {
 
   // Settings
   mode: FortuneMode;
-  theme: ThemeType;
   setMode: (mode: FortuneMode) => void;
-  setTheme: (theme: ThemeType) => void;
 
   // Current question/answer
   currentQuestion: string;
@@ -38,7 +36,6 @@ export const useStore = create<AppStore>()(
       // Initial state
       appState: 'idle',
       mode: 'classic',
-      theme: 'general',
       currentQuestion: '',
       currentAnswer: '',
       fortunes: [],
@@ -47,7 +44,6 @@ export const useStore = create<AppStore>()(
       // Actions
       setAppState: (appState) => set({ appState }),
       setMode: (mode) => set({ mode }),
-      setTheme: (theme) => set({ theme }),
       setCurrentQuestion: (currentQuestion) => set({ currentQuestion }),
       setCurrentAnswer: (currentAnswer) => set({ currentAnswer }),
 
@@ -72,7 +68,6 @@ export const useStore = create<AppStore>()(
       partialize: (state) => ({
         fortunes: state.fortunes,
         mode: state.mode,
-        theme: state.theme,
         reducedMotion: state.reducedMotion,
       }),
     }

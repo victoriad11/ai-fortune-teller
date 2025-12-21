@@ -1,76 +1,50 @@
-import { motion } from 'framer-motion';
 import { useStore } from '../store/useStore';
-import { THEMES } from '../constants/fortunes';
-import type { FortuneMode, ThemeType } from '../types';
-import styles from './Controls.module.css';
+import { Card } from '@/components/ui/card';
+import type { FortuneMode } from '../types';
 
 export const Controls = () => {
-  const { mode, setMode, theme, setTheme } = useStore();
-
-  const themes = Object.values(THEMES);
+  const { mode, setMode } = useStore();
 
   return (
-    <div className={styles.container}>
-      {/* Mode Toggle */}
-      <div className={styles.section}>
-        <label className={styles.label}>Mode</label>
-        <div className={styles.modeToggle}>
+    <Card className="w-full max-w-[500px] mx-auto p-6 bg-secondary border-border">
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Fortune Mode
+          </label>
+          <span className="text-xs font-medium text-primary px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+            {mode === 'classic' ? '🔮 Classic' : '🤖 AI Mode'}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 p-1 bg-background rounded-xl">
           <button
-            className={`${styles.modeButton} ${mode === 'classic' ? styles.active : ''}`}
+            className={`
+              px-4 py-3 font-semibold rounded-lg transition-all duration-250 flex items-center justify-center gap-2
+              ${mode === 'classic'
+                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-2 border-primary/40 scale-105'
+                : 'text-muted-foreground hover:bg-accent hover:text-foreground border-2 border-transparent hover:border-border'
+              }
+            `}
             onClick={() => setMode('classic' as FortuneMode)}
-            style={{
-              background:
-                mode === 'classic'
-                  ? `linear-gradient(135deg, ${THEMES[theme].gradient[0]}, ${THEMES[theme].gradient[1]})`
-                  : 'transparent',
-            }}
           >
-            Classic
+            <span className="text-xl">🔮</span>
+            <span>Classic</span>
           </button>
           <button
-            className={`${styles.modeButton} ${mode === 'ai' ? styles.active : ''}`}
+            className={`
+              px-4 py-3 font-semibold rounded-lg transition-all duration-250 flex items-center justify-center gap-2
+              ${mode === 'ai'
+                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-2 border-primary/40 scale-105'
+                : 'text-muted-foreground hover:bg-accent hover:text-foreground border-2 border-transparent hover:border-border'
+              }
+            `}
             onClick={() => setMode('ai' as FortuneMode)}
-            style={{
-              background:
-                mode === 'ai'
-                  ? `linear-gradient(135deg, ${THEMES[theme].gradient[0]}, ${THEMES[theme].gradient[1]})`
-                  : 'transparent',
-            }}
           >
-            AI Mode
+            <span className="text-xl">🤖</span>
+            <span>AI Mode</span>
           </button>
         </div>
       </div>
-
-      {/* Theme Selector */}
-      <div className={styles.section}>
-        <label className={styles.label}>Theme</label>
-        <div className={styles.themeGrid}>
-          {themes.map((themeOption) => (
-            <motion.button
-              key={themeOption.id}
-              className={`${styles.themeButton} ${
-                theme === themeOption.id ? styles.active : ''
-              }`}
-              onClick={() => setTheme(themeOption.id as ThemeType)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                background:
-                  theme === themeOption.id
-                    ? `linear-gradient(135deg, ${themeOption.gradient[0]}, ${themeOption.gradient[1]})`
-                    : 'var(--color-surface)',
-                borderColor:
-                  theme === themeOption.id ? themeOption.glowColor : 'transparent',
-              }}
-              aria-label={`Select ${themeOption.name} theme`}
-            >
-              <span className={styles.emoji}>{themeOption.emoji}</span>
-              <span className={styles.themeName}>{themeOption.name}</span>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-    </div>
+    </Card>
   );
 };

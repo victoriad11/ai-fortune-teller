@@ -1,21 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '../store/useStore';
-import { THEMES } from '../constants/fortunes';
-import styles from './Magic8Ball.module.css';
 
-interface Magic8BallProps {
-  onShake: () => void;
-}
-
-export const Magic8Ball = ({ onShake }: Magic8BallProps) => {
-  const { appState, currentAnswer, theme, reducedMotion } = useStore();
-  const themeConfig = THEMES[theme];
+export const Magic8Ball = () => {
+  const { appState, currentAnswer, reducedMotion } = useStore();
 
   const isShaking = appState === 'shaking';
   const hasAnswer = appState === 'answered';
   const showBall = !hasAnswer;
 
-  // Smooth shake animation - multiple small rotations and translations
+  // Smooth shake animation
   const shakeVariants = {
     idle: {
       rotate: 0,
@@ -57,40 +50,62 @@ export const Magic8Ball = ({ onShake }: Magic8BallProps) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="relative flex items-center justify-center w-full max-w-[400px] min-h-[400px] mx-auto md:max-w-[300px] md:min-h-[300px]">
       <AnimatePresence mode="wait">
         {showBall ? (
           <motion.div
             key="ball"
-            className={styles.ballImageContainer}
+            className="w-full max-w-[350px] flex items-center justify-center md:max-w-[280px]"
             variants={shakeVariants}
             animate={isShaking ? 'shaking' : 'idle'}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ exit: { duration: 0.3 } }}
+            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.3 } }}
           >
             <img
               src="/magic-8-ball.png"
               alt="Magic 8 Ball"
-              className={styles.ballImage}
+              className="w-full h-auto block drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
             />
           </motion.div>
         ) : (
           <motion.div
             key="answer"
-            className={styles.answerContainer}
+            className="w-full max-w-[350px] flex items-center justify-center md:max-w-[280px]"
             variants={answerVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
           >
-            <div
-              className={styles.answerBox}
-              style={{
-                background: `linear-gradient(135deg, ${themeConfig.gradient[0]}, ${themeConfig.gradient[1]})`,
-                boxShadow: `0 10px 40px ${themeConfig.glowColor}40`,
-              }}
-            >
-              <p className={styles.answerText}>{currentAnswer}</p>
+            <div className="relative w-full aspect-square flex items-center justify-center">
+              {/* Triangular fortune window - upside down triangle like real 8-ball */}
+              <div
+                className="relative w-[380px] h-[260px] flex items-center justify-center"
+                style={{
+                  clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)',
+                  background: 'linear-gradient(to bottom, #1e3a8a, #1e40af, #3b82f6)',
+                  boxShadow: '0 0 40px rgba(59, 130, 246, 0.6), 0 0 80px rgba(59, 130, 246, 0.3), inset 0 0 60px rgba(0, 0, 0, 0.3)',
+                }}
+              >
+                {/* Inner glow overlay */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    clipPath: 'polygon(50% 100%, 0% 0%, 100% 0%)',
+                    background: 'radial-gradient(ellipse at center, rgba(147, 197, 253, 0.4) 0%, transparent 70%)',
+                  }}
+                />
+
+                {/* Fortune text */}
+                <p
+                  className="text-white text-center font-bold uppercase tracking-wide px-12 relative z-10 leading-relaxed"
+                  style={{
+                    fontSize: 'clamp(1rem, 2.8vw, 1.3rem)',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(147, 197, 253, 0.5)',
+                    marginTop: '-30px', // Adjust text position in triangle
+                  }}
+                >
+                  {currentAnswer}
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

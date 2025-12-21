@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toPng } from 'html-to-image';
 import { useStore } from '../store/useStore';
-import { THEMES } from '../constants/fortunes';
-import styles from './ShareButton.module.css';
+import { Button } from '@/components/ui/button';
 
 export const ShareButton = () => {
-  const { currentQuestion, currentAnswer, theme, mode, appState } = useStore();
+  const { currentQuestion, currentAnswer, mode, appState } = useStore();
   const [isSharing, setIsSharing] = useState(false);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const themeConfig = THEMES[theme];
 
   const handleShare = async () => {
     if (appState !== 'answered') return;
@@ -24,7 +22,7 @@ export const ShareButton = () => {
       shareContainer.style.left = '-9999px';
       shareContainer.style.width = '600px';
       shareContainer.style.padding = '40px';
-      shareContainer.style.background = `linear-gradient(135deg, ${themeConfig.gradient[0]}, ${themeConfig.gradient[1]})`;
+      shareContainer.style.background = 'linear-gradient(135deg, hsl(262 83% 58%), hsl(276 59% 58%))';
       shareContainer.style.borderRadius = '20px';
       shareContainer.style.fontFamily = 'Inter, sans-serif';
 
@@ -44,8 +42,6 @@ export const ShareButton = () => {
           </div>
 
           <div style="display: flex; justify-content: center; gap: 15px; font-size: 14px; opacity: 0.8;">
-            <span>${themeConfig.emoji} ${themeConfig.name}</span>
-            <span>•</span>
             <span>${mode === 'ai' ? '🤖 AI Mode' : '🔮 Classic'}</span>
           </div>
         </div>
@@ -59,7 +55,6 @@ export const ShareButton = () => {
         pixelRatio: 2,
       });
 
-      // Remove temporary container
       document.body.removeChild(shareContainer);
 
       // Try to use the native share API if available
@@ -109,18 +104,17 @@ export const ShareButton = () => {
 
   if (appState !== 'answered') return null;
 
+  const MotionButton = motion(Button);
+
   return (
-    <motion.button
-      className={styles.button}
-      style={{
-        background: `linear-gradient(135deg, ${themeConfig.gradient[0]}, ${themeConfig.gradient[1]})`,
-      }}
+    <MotionButton
       onClick={handleShare}
       disabled={isSharing}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      className="min-w-[180px] w-full md:w-auto"
     >
       {isSharing ? (
         'Creating...'
@@ -133,6 +127,6 @@ export const ShareButton = () => {
           <span>📸</span> Share Fortune
         </>
       )}
-    </motion.button>
+    </MotionButton>
   );
 };

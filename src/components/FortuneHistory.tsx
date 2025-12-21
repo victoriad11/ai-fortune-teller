@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
-import { THEMES } from '../constants/fortunes';
-import styles from './FortuneHistory.module.css';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export const FortuneHistory = () => {
   const { fortunes, clearHistory } = useStore();
@@ -10,66 +10,64 @@ export const FortuneHistory = () => {
 
   if (fortunes.length === 0) return null;
 
+  const MotionButton = motion(Button);
+
   return (
-    <div className={styles.container}>
-      <motion.button
-        className={styles.toggleButton}
+    <div className="w-full max-w-[500px] mx-auto">
+      <MotionButton
+        variant="default"
+        className="w-full"
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
         {isOpen ? 'Hide' : 'View'} History ({fortunes.length})
-      </motion.button>
+      </MotionButton>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className={styles.historyPanel}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className={styles.header}>
-              <h3 className={styles.title}>Fortune History</h3>
-              <button
-                className={styles.clearButton}
-                onClick={clearHistory}
-                aria-label="Clear history"
-              >
-                Clear All
-              </button>
-            </div>
+            <Card className="mt-4 bg-secondary border-border overflow-hidden">
+              <div className="flex items-center justify-between p-6 border-b border-border">
+                <h3 className="text-lg font-bold">Fortune History</h3>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={clearHistory}
+                  aria-label="Clear history"
+                >
+                  Clear All
+                </Button>
+              </div>
 
-            <div className={styles.list}>
-              {fortunes.map((fortune, index) => {
-                const themeConfig = THEMES[fortune.theme];
-                return (
+              <div className="max-h-[400px] overflow-y-auto p-4 flex flex-col gap-4">
+                {fortunes.map((fortune, index) => (
                   <motion.div
                     key={fortune.id}
-                    className={styles.item}
+                    className="p-4 bg-background rounded-xl flex flex-col gap-2 border-l-4 border-primary"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    style={{
-                      borderLeft: `3px solid ${themeConfig.glowColor}`,
-                    }}
                   >
-                    <div className={styles.itemHeader}>
-                      <span className={styles.emoji}>{themeConfig.emoji}</span>
-                      <span className={styles.badge}>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="px-2 py-0.5 bg-accent rounded font-semibold">
                         {fortune.mode === 'ai' ? '🤖 AI' : '🔮 Classic'}
                       </span>
-                      <span className={styles.time}>
+                      <span className="ml-auto">
                         {new Date(fortune.timestamp).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className={styles.question}>{fortune.question}</p>
-                    <p className={styles.answer}>{fortune.answer}</p>
+                    <p className="text-sm font-semibold">{fortune.question}</p>
+                    <p className="text-sm text-muted-foreground italic">{fortune.answer}</p>
                   </motion.div>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>
