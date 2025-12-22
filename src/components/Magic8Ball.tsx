@@ -96,11 +96,11 @@ export const Magic8Ball = () => {
 
                 {/* Fortune text */}
                 <p
-                  className="text-white text-center font-bold uppercase tracking-wide px-12 relative z-10 leading-relaxed"
+                  className="text-white text-center font-bold uppercase tracking-wide px-16 relative z-10 leading-relaxed max-w-[280px]"
                   style={{
-                    fontSize: 'clamp(1rem, 2.8vw, 1.3rem)',
+                    fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(147, 197, 253, 0.5)',
-                    marginTop: '-30px', // Adjust text position in triangle
+                    marginTop: '-50px', // Position text higher in triangle where it's wider
                   }}
                 >
                   {currentAnswer}
