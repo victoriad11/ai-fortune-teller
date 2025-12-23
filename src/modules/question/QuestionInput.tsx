@@ -1,15 +1,13 @@
 import { motion } from 'framer-motion';
-import { useStore } from '../store/useStore';
+import { useStore } from '@/store/useStore';
 import { InputGroup, InputGroupInput, InputGroupAction } from '@/components/ui/input-group';
 import { Button } from '@/components/ui/button';
-
-interface QuestionInputProps {
-  onSubmit: () => void;
-}
+import { getButtonText, isInputDisabled } from './utils';
+import type { QuestionInputProps } from './types';
 
 export const QuestionInput = ({ onSubmit }: QuestionInputProps) => {
   const { currentQuestion, setCurrentQuestion, appState } = useStore();
-  const isDisabled = appState === 'shaking' || appState === 'revealing' || appState === 'answered';
+  const isDisabled = isInputDisabled(appState);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && currentQuestion.trim()) {
@@ -38,10 +36,7 @@ export const QuestionInput = ({ onSubmit }: QuestionInputProps) => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
           >
-            <InputGroupAction
-              onClick={() => setCurrentQuestion('')}
-              aria-label="Clear question"
-            >
+            <InputGroupAction onClick={() => setCurrentQuestion('')} aria-label="Clear question">
               ✕
             </InputGroupAction>
           </motion.div>
@@ -57,7 +52,7 @@ export const QuestionInput = ({ onSubmit }: QuestionInputProps) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {appState === 'shaking' || appState === 'revealing' ? 'Shaking...' : appState === 'answered' ? 'Ask Another Question' : 'Shake the Ball'}
+        {getButtonText(appState)}
       </MotionButton>
     </div>
   );

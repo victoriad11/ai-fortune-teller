@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from './store/useStore';
 import { getFortune } from './utils/fortuneService';
-import { Magic8Ball } from './components/Magic8Ball';
-import { QuestionInput } from './components/QuestionInput';
-import { Controls } from './components/Controls';
-import { FortuneHistory } from './components/FortuneHistory';
-import { ShareButton } from './components/ShareButton';
+import { Magic8Ball } from './modules/magic-ball';
+import { QuestionInput } from './modules/question';
+import { ModeSelector } from './modules/mode';
+import { FortuneHistory } from './modules/fortune-history';
+import { ShareButton } from './modules/share';
 import { Button } from '@/components/ui/button';
 
 function App() {
@@ -145,7 +145,7 @@ function App() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <Controls />
+        <ModeSelector />
       </motion.div>
 
       {/* History */}

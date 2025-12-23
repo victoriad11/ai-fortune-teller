@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { useStore } from '../store/useStore';
+import { useStore } from '@/store/useStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { getModeLabel, formatDate, getToggleButtonText } from './utils';
 
 export const FortuneHistory = () => {
   const { fortunes, clearHistory } = useStore();
@@ -21,7 +22,7 @@ export const FortuneHistory = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isOpen ? 'Hide' : 'View'} History ({fortunes.length})
+        {getToggleButtonText(isOpen, fortunes.length)}
       </MotionButton>
 
       <AnimatePresence>
@@ -35,12 +36,7 @@ export const FortuneHistory = () => {
             <Card className="mt-4 bg-secondary border-border overflow-hidden">
               <div className="flex items-center justify-between p-6 border-b border-border">
                 <h3 className="text-lg font-bold">Fortune History</h3>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={clearHistory}
-                  aria-label="Clear history"
-                >
+                <Button variant="destructive" size="sm" onClick={clearHistory} aria-label="Clear history">
                   Clear All
                 </Button>
               </div>
@@ -56,11 +52,9 @@ export const FortuneHistory = () => {
                   >
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <span className="px-2 py-0.5 bg-accent rounded font-semibold">
-                        {fortune.mode === 'ai' ? '🤖 AI' : '🔮 Classic'}
+                        {getModeLabel(fortune.mode)}
                       </span>
-                      <span className="ml-auto">
-                        {new Date(fortune.timestamp).toLocaleDateString()}
-                      </span>
+                      <span className="ml-auto">{formatDate(fortune.timestamp)}</span>
                     </div>
                     <p className="text-sm font-semibold">{fortune.question}</p>
                     <p className="text-sm text-muted-foreground italic">{fortune.answer}</p>
