@@ -2,20 +2,20 @@ import { motion } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 import { InputGroup, InputGroupInput, InputGroupAction } from '@/components/ui/input-group';
 import { Button } from '@/components/ui/button';
-import { getButtonText, isInputDisabled } from './utils';
+import { isInputDisabled, isShakeButtonVisible } from './utils';
 import type { QuestionInputProps } from './types';
 
-export const QuestionInput = ({ onSubmit }: QuestionInputProps) => {
+export const QuestionInput = ({ onSubmit, onAskAnother }: QuestionInputProps) => {
   const { currentQuestion, setCurrentQuestion, appState } = useStore();
   const isDisabled = isInputDisabled(appState);
+  const showShakeButton = isShakeButtonVisible(appState);
+  const isShaking = appState === 'shaking' || appState === 'revealing';
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && currentQuestion.trim()) {
+    if (e.key === 'Enter' && currentQuestion.trim() && showShakeButton && !isShaking) {
       onSubmit();
     }
   };
-
-  const MotionButton = motion(Button);
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-[500px] mx-auto">
@@ -43,17 +43,26 @@ export const QuestionInput = ({ onSubmit }: QuestionInputProps) => {
         )}
       </InputGroup>
 
-      <MotionButton
-        variant="default"
-        size="lg"
-        className="w-full text-lg font-bold py-6 shadow-lg hover:shadow-xl transition-all"
-        onClick={onSubmit}
-        disabled={isDisabled || !currentQuestion.trim()}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {getButtonText(appState)}
-      </MotionButton>
+      {showShakeButton ? (
+        <Button
+          variant="default"
+          size="lg"
+          className="w-full text-lg font-bold py-6 shadow-lg hover:shadow-xl transition-all"
+          onClick={onSubmit}
+          disabled={!currentQuestion.trim() || isShaking}
+        >
+          {isShaking ? 'Shaking...' : 'Shake the Ball'}
+        </Button>
+      ) : (
+        <Button
+          variant="default"
+          size="lg"
+          className="w-full text-lg font-bold py-6 shadow-lg hover:shadow-xl transition-all"
+          onClick={onAskAnother}
+        >
+          Ask Another Question
+        </Button>
+      )}
     </div>
   );
 };

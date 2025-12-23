@@ -7,7 +7,6 @@ import { QuestionInput } from './modules/question';
 import { ModeSelector } from './modules/mode';
 import { FortuneHistory } from './modules/fortune-history';
 import { ShareButton } from './modules/share';
-import { Button } from '@/components/ui/button';
 
 function App() {
   const {
@@ -22,7 +21,6 @@ function App() {
     reset,
   } = useStore();
 
-  // Check for reduced motion preference
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(mediaQuery.matches);
@@ -38,25 +36,19 @@ function App() {
   const handleShake = async () => {
     if (!currentQuestion.trim() || appState !== 'idle') return;
 
-    // Shake animation phase
     setAppState('shaking');
 
-    // Wait for shake animation to complete
     await new Promise((resolve) => setTimeout(resolve, reducedMotion ? 1500 : 2500));
 
-    // Revealing phase
     setAppState('revealing');
 
     try {
-      // Fetch fortune
       const answer = await getFortune(mode, currentQuestion);
       setCurrentAnswer(answer);
 
-      // Show answer
       await new Promise((resolve) => setTimeout(resolve, reducedMotion ? 100 : 300));
       setAppState('answered');
 
-      // Add to history
       addFortune({
         id: Date.now().toString(),
         question: currentQuestion,
@@ -75,7 +67,6 @@ function App() {
     reset();
   };
 
-  const MotionButton = motion(Button);
 
   return (
     <div className="min-h-screen flex flex-col items-center px-8 md:px-4 gap-12 md:gap-8 overflow-y-auto bg-background">
@@ -115,30 +106,16 @@ function App() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <QuestionInput onSubmit={handleShake} />
+          <QuestionInput onSubmit={handleShake} onAskAnother={handleAskAnother} />
         </motion.div>
 
-        {/* Ask Another Button and Share */}
         {appState === 'answered' && (
           <div className="flex gap-4 w-full justify-center flex-wrap">
             <ShareButton />
-            <MotionButton
-              variant="outline"
-              onClick={handleAskAnother}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-full md:w-auto"
-            >
-              Ask Another Question
-            </MotionButton>
           </div>
         )}
       </main>
 
-      {/* Controls */}
       <motion.div
         className="w-full"
         initial={{ opacity: 0, y: 20 }}
@@ -148,7 +125,6 @@ function App() {
         <ModeSelector />
       </motion.div>
 
-      {/* History */}
       <motion.div
         className="w-full"
         initial={{ opacity: 0 }}
@@ -158,7 +134,6 @@ function App() {
         <FortuneHistory />
       </motion.div>
 
-      {/* Footer */}
       <footer className="mt-auto p-6 text-center text-muted-foreground text-sm">
         <p>
           Made with ✨ by a UI Frontend Engineer •{' '}
