@@ -19,6 +19,7 @@ function App() {
     addFortune,
     reducedMotion,
     setReducedMotion,
+    reset,
   } = useStore();
 
   // Check for reduced motion preference
@@ -71,8 +72,7 @@ function App() {
   };
 
   const handleAskAnother = () => {
-    setAppState('idle');
-    setCurrentAnswer('');
+    reset();
   };
 
   const MotionButton = motion(Button);

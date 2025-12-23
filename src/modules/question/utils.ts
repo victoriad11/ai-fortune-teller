@@ -4,9 +4,6 @@ export function getButtonText(appState: AppState): string {
   if (appState === 'shaking' || appState === 'revealing') {
     return 'Shaking...';
   }
-  if (appState === 'answered') {
-    return 'Ask Another Question';
-  }
   return 'Shake the Ball';
 }
 
