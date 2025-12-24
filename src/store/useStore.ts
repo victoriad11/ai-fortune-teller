@@ -3,30 +3,24 @@ import { persist } from 'zustand/middleware';
 import type { AppState, Fortune, FortuneMode } from '../types';
 
 interface AppStore {
-  // UI State
   appState: AppState;
   setAppState: (state: AppState) => void;
 
-  // Settings
   mode: FortuneMode;
   setMode: (mode: FortuneMode) => void;
 
-  // Current question/answer
   currentQuestion: string;
   setCurrentQuestion: (question: string) => void;
   currentAnswer: string;
   setCurrentAnswer: (answer: string) => void;
 
-  // History
   fortunes: Fortune[];
   addFortune: (fortune: Fortune) => void;
   clearHistory: () => void;
 
-  // Accessibility
   reducedMotion: boolean;
   setReducedMotion: (value: boolean) => void;
 
-  // Reset
   reset: () => void;
 }
 
