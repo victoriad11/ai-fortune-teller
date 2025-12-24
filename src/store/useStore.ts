@@ -33,7 +33,6 @@ interface AppStore {
 export const useStore = create<AppStore>()(
   persist(
     (set) => ({
-      // Initial state
       appState: 'idle',
       mode: 'classic',
       currentQuestion: '',
@@ -41,7 +40,6 @@ export const useStore = create<AppStore>()(
       fortunes: [],
       reducedMotion: false,
 
-      // Actions
       setAppState: (appState) => set({ appState }),
       setMode: (mode) => set({ mode }),
       setCurrentQuestion: (currentQuestion) => set({ currentQuestion }),
