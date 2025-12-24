@@ -14,12 +14,12 @@ export const ShareButton = () => {
   };
 
   const getButtonText = () => {
-    if (isSharing) return 'Creating...';
+    if (isSharing) return 'Copying...';
     if (status === 'success') return '✓ Copied!';
     if (status === 'error') return 'Error - Try Again';
     return (
       <>
-        <span>📸</span> Share Fortune
+        <span>📋</span> Copy Fortune
       </>
     );
   };
