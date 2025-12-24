@@ -1,10 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '@/store/useStore';
 import { getShakeVariants, answerVariants } from './animations';
-import { triangleContainerStyle, triangleGlowStyle, fortuneTextStyle } from './styles';
+import { triangleContainerStyle, triangleGlowStyle, getFortuneTextStyle } from './styles';
 
 export const Magic8Ball = () => {
-  const { appState, currentAnswer, reducedMotion } = useStore();
+  const { appState, currentAnswer, reducedMotion, mode } = useStore();
 
   const isShaking = appState === 'shaking';
   const hasAnswer = appState === 'answered';
@@ -47,7 +47,7 @@ export const Magic8Ball = () => {
 
                 <p
                   className="text-white text-center font-bold uppercase tracking-wide px-16 relative z-10 leading-relaxed max-w-[280px]"
-                  style={fortuneTextStyle}
+                  style={getFortuneTextStyle(mode)}
                 >
                   {currentAnswer}
                 </p>

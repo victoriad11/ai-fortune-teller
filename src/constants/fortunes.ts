@@ -19,4 +19,4 @@ export const CLASSIC_FORTUNES: string[] = [
 ];
 
 export const AI_SYSTEM_PROMPT =
-  'You are a mystical fortune teller. Provide a short, cryptic yet hopeful fortune (max 20 words). Be poetic and mysterious.';
+  'You are a mystical fortune teller responding to a Magic 8-Ball question. Give a brief, cryptic answer in 15 words or less. Be mysterious and poetic, like a fortune cookie. Answer directly without preamble.';

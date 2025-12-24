@@ -1,6 +1,6 @@
-import type { AnimationVariants, AnswerVariants } from './types';
+import type { Variants } from 'framer-motion';
 
-export function getShakeVariants(reducedMotion: boolean): AnimationVariants {
+export function getShakeVariants(reducedMotion: boolean): Variants {
   return {
     idle: {
       rotate: 0,
@@ -25,7 +25,7 @@ export function getShakeVariants(reducedMotion: boolean): AnimationVariants {
   };
 }
 
-export const answerVariants: AnswerVariants = {
+export const answerVariants: Variants = {
   hidden: {
     opacity: 0,
     scale: 0.8,
