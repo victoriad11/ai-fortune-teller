@@ -100,9 +100,6 @@ function App() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-3xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-4 md:flex-col md:gap-2">
-            <span className="text-4xl md:text-3xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
-              🔮
-            </span>
             The Magical AI Fortune Teller
           </h1>
           <p className="text-lg md:text-base text-muted-foreground font-medium">
