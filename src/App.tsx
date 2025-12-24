@@ -1,31 +1,28 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { useStore } from './store/useStore';
 import { getFortune } from './utils/fortuneService';
-import { Magic8Ball } from './components/Magic8Ball';
-import { QuestionInput } from './components/QuestionInput';
-import { Controls } from './components/Controls';
-import { FortuneHistory } from './components/FortuneHistory';
-import { ShareButton } from './components/ShareButton';
-import { THEMES } from './constants/fortunes';
-import styles from './App.module.css';
+import { Magic8Ball } from './modules/magic-ball';
+import { QuestionInput } from './modules/question';
+import { ModeSelector } from './modules/mode';
+import { FortuneHistory } from './modules/fortune-history';
+import { ShareButton } from './modules/share';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   const {
     appState,
     setAppState,
     mode,
-    theme,
     currentQuestion,
     setCurrentAnswer,
     addFortune,
     reducedMotion,
     setReducedMotion,
+    reset,
   } = useStore();
 
-  const themeConfig = THEMES[theme];
-
-  // Check for reduced motion preference
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(mediaQuery.matches);
@@ -41,31 +38,42 @@ function App() {
   const handleShake = async () => {
     if (!currentQuestion.trim() || appState !== 'idle') return;
 
-    // Shake animation phase
     setAppState('shaking');
 
-    // Wait for shake animation to complete (2-3 seconds)
     await new Promise((resolve) => setTimeout(resolve, reducedMotion ? 1500 : 2500));
 
-    // Revealing phase
     setAppState('revealing');
 
     try {
-      // Fetch fortune
-      const answer = await getFortune(mode, currentQuestion, theme);
-      setCurrentAnswer(answer);
+      const result = await getFortune(mode, currentQuestion);
+      setCurrentAnswer(result.answer);
 
-      // Show answer
+      // Show error toast if there was an issue
+      if (result.error === 'rate_limit') {
+        toast.error('Rate limit reached! Try again in a few minutes.', {
+          description: 'Showing a classic fortune instead.',
+          duration: 5000,
+        });
+      } else if (result.error === 'no_api_key') {
+        toast.warning('AI mode requires an API key', {
+          description: 'Add VITE_GEMINI_API_KEY to your .env file. Showing classic fortune.',
+          duration: 5000,
+        });
+      } else if (result.error === 'api_error') {
+        toast.error('AI service unavailable', {
+          description: 'Showing a classic fortune instead.',
+          duration: 4000,
+        });
+      }
+
       await new Promise((resolve) => setTimeout(resolve, reducedMotion ? 100 : 300));
       setAppState('answered');
 
-      // Add to history
       addFortune({
         id: Date.now().toString(),
         question: currentQuestion,
-        answer,
+        answer: result.answer,
         mode,
-        theme,
         timestamp: Date.now(),
       });
     } catch (error) {
@@ -76,103 +84,87 @@ function App() {
   };
 
   const handleAskAnother = () => {
-    setAppState('idle');
-    setCurrentAnswer('');
+    reset();
   };
 
+
   return (
-    <div
-      className={styles.app}
-      style={{
-        background: `radial-gradient(circle at 50% 20%, ${themeConfig.glowColor}15 0%, var(--color-background) 50%)`,
-      }}
-    >
-      {/* Header */}
-      <motion.header
-        className={styles.header}
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className={styles.title}>
-          <span className={styles.emoji}>🔮</span>
-          The Magical AI Fortune Teller
-        </h1>
-        <p className={styles.subtitle}>Ask your question and shake the ball</p>
-      </motion.header>
-
-      {/* Main Content */}
-      <main className={styles.main}>
-        {/* Magic 8 Ball */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+    <>
+      <Toaster />
+      <div className="min-h-screen flex flex-col items-center px-8 md:px-4 gap-12 md:gap-8 overflow-y-auto bg-background">
+        {/* Header */}
+        <motion.header
+          className="text-center mt-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <Magic8Ball onShake={handleShake} />
-        </motion.div>
+          <h1 className="text-4xl md:text-3xl font-extrabold bg-gradient-to-r from-orange-400 via-orange-500 to-amber-500 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-4 md:flex-col md:gap-2">
+            The Magical AI Fortune Teller
+          </h1>
+          <p className="text-lg md:text-base text-muted-foreground font-medium">
+            Ask your question and shake the ball
+          </p>
+        </motion.header>
 
-        {/* Question Input */}
+        <main className="flex flex-col items-center gap-12 md:gap-8 w-full max-w-[600px]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Magic8Ball />
+          </motion.div>
+
+          <motion.div
+            className="w-full"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <QuestionInput onSubmit={handleShake} onAskAnother={handleAskAnother} />
+          </motion.div>
+
+          {appState === 'answered' && (
+            <div className="flex gap-4 w-full justify-center flex-wrap">
+              <ShareButton />
+            </div>
+          )}
+        </main>
+
         <motion.div
+          className="w-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <QuestionInput onSubmit={handleShake} />
+          <ModeSelector />
         </motion.div>
 
-        {/* Ask Another Button and Share */}
-        {appState === 'answered' && (
-          <div className={styles.actionButtons}>
-            <ShareButton />
-            <motion.button
-              className={styles.askAnotherButton}
-              onClick={handleAskAnother}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+        <motion.div
+          className="w-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <FortuneHistory />
+        </motion.div>
+
+        <footer className="mt-auto p-6 text-center text-muted-foreground text-sm">
+          <p>
+            Made with ✨ by a UI Frontend Engineer •{' '}
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold hover:opacity-80 transition-opacity"
             >
-              Ask Another Question
-            </motion.button>
-          </div>
-        )}
-      </main>
-
-      {/* Controls */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <Controls />
-      </motion.div>
-
-      {/* History */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-      >
-        <FortuneHistory />
-      </motion.div>
-
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <p>
-          Made with ✨ by a UI Frontend Engineer •{' '}
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: themeConfig.glowColor }}
-          >
-            View Source
-          </a>
-        </p>
-      </footer>
-    </div>
+              View Source
+            </a>
+          </p>
+        </footer>
+      </div>
+    </>
   );
 }
 
