@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="ballGradient" cx="40%" cy="40%">
+      <stop offset="0%" style="stop-color:#4a5568;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#1a202c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="windowGradient" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e40af;stop-opacity:0.5" />
+    </radialGradient>
+    <radialGradient id="highlightGradient" cx="30%" cy="30%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Main 8-ball sphere -->
+  <circle cx="50" cy="50" r="45" fill="url(#ballGradient)" />
+
+  <!-- Highlight/shine effect -->
+  <ellipse cx="35" cy="35" rx="15" ry="20" fill="url(#highlightGradient)" opacity="0.6" />
+
+  <!-- Answer window -->
+  <circle cx="50" cy="50" r="26" fill="#ffffff" />
+
+  <!-- Inner triangle/answer area -->
+  <path d="M 50 35 L 60 55 L 40 55 Z" fill="#e0e0e0" opacity="0.3" />
+
+  <!-- Number 8 -->
+  <text x="50" y="62" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#000000" text-anchor="middle">8</text>
+
+  <!-- Shadow/depth -->
+  <circle cx="50" cy="50" r="45" fill="none" stroke="#000000" stroke-width="1" opacity="0.3" />
+</svg>

@@ -154,7 +154,7 @@ function App() {
           <p>
             Made with ✨ by a UI Frontend Engineer •{' '}
             <a
-              href="https://github.com"
+              href="https://github.com/victoriad11/ai-fortune-teller"
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold hover:opacity-80 transition-opacity"
