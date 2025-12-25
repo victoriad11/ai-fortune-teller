@@ -1,36 +1,38 @@
 # 🔮 The Magical AI Fortune Teller
 
-A playful, interactive web app that blends delightful UI, smooth animations, and AI-generated insights to create a modern take on the classic Magic 8 Ball. Perfect for showcasing frontend engineering skills, UX design, and creative product thinking.
+A playful, interactive web app that blends delightful UI, smooth animations, and AI-generated insights to create a modern take on the classic Magic 8 Ball. Built with modern web technologies and comprehensive test coverage.
 
-![Fortune Teller Demo](https://img.shields.io/badge/status-live-success)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-38B2AC?logo=tailwind-css&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-136%20passing-success)
 
 ## ✨ Features
 
 ### Core Functionality
-- 🎱 **Interactive Magic 8 Ball** - Beautifully animated 3D-style ball with breathing motion
+- 🎱 **Interactive Magic 8 Ball** - Beautifully animated ball with smooth shake animations
 - 💬 **Question Input** - Ask any question and receive mystical guidance
 - 🤖 **Dual Modes**:
-  - **Classic Mode**: Traditional Magic 8 Ball responses
-  - **AI Mode**: GPT-powered personalized fortunes
-- 🎨 **5 Themed Modes**: General, Career, Romance, Meme, Tarot
+  - **Classic Mode**: Traditional Magic 8 Ball responses (17 classic fortunes)
+  - **AI Mode**: Google Gemini-powered personalized fortunes
+- 🎨 **Modern Dark Theme** - Orange/amber accent colors with OKLCH color space
 
 ### User Experience
-- ⚡ **Smooth Animations** - Powered by Framer Motion with 90 FPS performance
-- 🌈 **Dynamic Theming** - Each theme has unique colors and gradients
+- ⚡ **Smooth Animations** - Powered by Framer Motion with optimized performance
 - 📱 **Fully Responsive** - Beautiful on mobile, tablet, and desktop
-- ♿ **Accessible** - Keyboard navigation and reduced motion support
-- 💾 **Fortune History** - View and manage your past fortunes
-- 📸 **Share Feature** - Export fortunes as beautiful images
+- ♿ **Accessible** - Keyboard navigation, ARIA labels, and reduced motion support
+- 💾 **Fortune History** - View and manage your past fortunes with timestamps
+- 📋 **Share Feature** - Copy fortunes to clipboard with one click
+- 🔔 **Toast Notifications** - Friendly error messages when AI mode hits rate limits
 
 ### Technical Excellence
 - 🎯 **TypeScript** - Fully typed for safety and developer experience
-- 🏗️ **Clean Architecture** - Component-based with clear separation of concerns
+- 🏗️ **Modular Architecture** - Clean separation with feature-based modules
+- 🧪 **Comprehensive Tests** - 136 tests with Vitest and React Testing Library
 - 🔄 **State Management** - Zustand for global state with persistence
-- 🎭 **State Machine** - Robust app lifecycle management
-- ⚡ **Optimized Performance** - Lighthouse score 90+
+- 🎨 **shadcn/ui Components** - Reusable, composable UI components
+- ⚡ **Tailwind CSS v4** - Modern styling with custom design system
 
 ## 🚀 Quick Start
 
@@ -51,10 +53,10 @@ cd ai-fortune-teller
 npm install
 ```
 
-3. (Optional) Set up OpenAI API for AI Mode:
+3. (Optional) Set up Google Gemini API for AI Mode:
 ```bash
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Edit .env and add your Gemini API key
 ```
 
 4. Start the development server:
@@ -69,53 +71,90 @@ npm run dev
 Create a `.env` file in the root directory:
 
 ```env
-VITE_OPENAI_API_KEY=your_openai_api_key_here
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-**Note**: AI Mode will gracefully fall back to Classic Mode if the API key is not configured.
+**Note**: AI Mode will gracefully fall back to Classic Mode if the API key is not configured. You'll see a helpful toast notification explaining what happened.
 
-Get your OpenAI API key at: [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+**Get your FREE Gemini API key** at: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- No credit card required
+- Very generous free tier: 15 requests/min, 1,500 requests/day, 1M requests/month
+
+### List Available Models
+
+To see which Gemini models are available with your API key:
+
+```bash
+npm run list-models
+```
 
 ## 🏗️ Project Structure
 
 ```
 src/
-├── components/         # React components
-│   ├── Magic8Ball.tsx     # Animated ball component
-│   ├── QuestionInput.tsx  # Input field
-│   ├── Controls.tsx       # Mode/theme selectors
-│   ├── FortuneHistory.tsx # History panel
-│   └── ShareButton.tsx    # Share functionality
-├── constants/         # App constants
-│   └── fortunes.ts       # Fortune responses & themes
-├── store/            # State management
-│   └── useStore.ts       # Zustand store
-├── types/            # TypeScript types
+├── components/ui/          # Reusable UI components (shadcn/ui)
+│   ├── button.tsx              # Button component
+│   ├── card.tsx                # Card component
+│   ├── input.tsx               # Input component
+│   ├── input-group.tsx         # Grouped input with actions
+│   ├── switcher.tsx            # Mode switcher component
+│   └── sonner.tsx              # Toast notifications
+├── modules/               # Feature-based modules
+│   ├── magic-ball/            # Magic 8 Ball feature
+│   │   ├── Magic8Ball.tsx
+│   │   ├── animations.ts
+│   │   ├── styles.ts
+│   │   ├── types.ts
+│   │   └── __tests__/
+│   ├── question/              # Question input feature
+│   │   ├── QuestionInput.tsx
+│   │   ├── utils.ts
+│   │   ├── types.ts
+│   │   └── __tests__/
+│   ├── mode/                  # Mode selector feature
+│   │   ├── ModeSelector.tsx
+│   │   ├── utils.ts
+│   │   └── __tests__/
+│   ├── fortune-history/       # Fortune history feature
+│   │   ├── FortuneHistory.tsx
+│   │   ├── utils.ts
+│   │   └── __tests__/
+│   └── share/                 # Share feature
+│       ├── ShareButton.tsx
+│       ├── shareService.ts
+│       ├── useShare.ts
+│       └── __tests__/
+├── constants/             # App constants
+│   ├── fortunes.ts            # Fortune responses
+│   └── gemini-model.ts        # AI model configuration
+├── store/                # State management
+│   └── useStore.ts           # Zustand store
+├── types/                # TypeScript types
 │   └── index.ts
-├── utils/            # Utility functions
-│   └── fortuneService.ts # Fortune generation logic
-├── styles/           # Global styles
-│   └── global.css
-└── App.tsx          # Main app component
+├── utils/                # Utility functions
+│   └── fortuneService.ts     # Fortune generation logic
+├── test/                 # Test configuration
+│   └── setup.ts
+└── App.tsx              # Main app component
 ```
 
-## 🎨 Themes
+## 🎮 Modes
 
-The app includes 5 carefully designed themes:
+The app features two distinct fortune-telling modes:
 
-| Theme | Emoji | Use Case |
-|-------|-------|----------|
-| General | 🔮 | All-purpose questions |
-| Career | 💼 | Professional guidance |
-| Romance | 💕 | Love and relationships |
-| Meme | 😂 | Fun, internet-savvy fortunes |
-| Tarot | 🌙 | Mystical, spiritual insights |
+| Mode | Icon | Description |
+|------|------|-------------|
+| Classic | 🔮 | Traditional Magic 8 Ball responses with 17 classic fortunes |
+| AI | 🤖 | Google Gemini-powered personalized fortunes tailored to your question |
 
 ## 🛠️ Scripts
 
 ```bash
 # Development server with HMR
 npm run dev
+
+# Run tests
+npm test
 
 # Type checking
 npm run type-check
@@ -128,106 +167,32 @@ npm run preview
 
 # Lint code
 npm run lint
+
+# List available Gemini models
+npm run list-models
 ```
 
 ## 📦 Tech Stack
 
-- **Framework**: React 18
+- **Framework**: React 19
 - **Language**: TypeScript
 - **Build Tool**: Vite
 - **Animation**: Framer Motion
-- **State Management**: Zustand
-- **Styling**: CSS Modules + Custom Properties
-- **AI Integration**: OpenAI GPT-4o-mini
-- **Image Export**: html-to-image
-
-## 🌐 Deployment
-
-### Deploy to Vercel
-
-1. Push your code to GitHub
-
-2. Import your repository on [Vercel](https://vercel.com)
-
-3. Configure environment variables in Vercel dashboard:
-   - Add `VITE_OPENAI_API_KEY`
-
-4. Deploy!
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-
-### Other Platforms
-
-This app works with any static hosting service:
-- Netlify
-- Cloudflare Pages
-- GitHub Pages
-- Render
-
-## 🎯 Key Features for Portfolio
-
-This project demonstrates:
-
-1. **Frontend Excellence**
-   - Advanced React patterns (hooks, context, memoization)
-   - TypeScript best practices
-   - CSS architecture with design tokens
-   - Component composition
-
-2. **Animation & UX**
-   - Complex Framer Motion animations
-   - Spring physics and easing
-   - Micro-interactions
-   - Reduced motion support
-
-3. **State Management**
-   - Zustand for global state
-   - State persistence
-   - State machine pattern
-
-4. **Product Thinking**
-   - User-centric design
-   - Graceful degradation
-   - Error handling
-   - Performance optimization
-
-5. **Accessibility**
-   - Keyboard navigation
-   - ARIA labels
-   - Focus management
-   - Reduced motion preferences
-
-## 📝 Case Study
-
-### Problem
-Create a delightful, memorable portfolio piece that showcases frontend engineering excellence while being fun and engaging.
-
-### Solution
-A modern take on the Magic 8 Ball that combines nostalgic appeal with cutting-edge web technologies and AI integration.
-
-### Impact
-- ⚡ 90+ Lighthouse score
-- 🎨 5 unique themed experiences
-- 🤖 AI-powered personalization
-- 📱 Flawless mobile experience
-- ♿ Fully accessible
-
-## 🤝 Contributing
-
-This is a portfolio project, but suggestions and feedback are welcome!
-
-## 📄 License
-
-MIT License - feel free to use this code for learning or in your own projects.
+- **State Management**: Zustand (with persistence)
+- **Styling**: Tailwind CSS v4 (OKLCH color space)
+- **UI Components**: shadcn/ui
+- **AI Integration**: Google Gemini (gemini-flash-latest)
+- **Notifications**: Sonner (toast notifications)
+- **Testing**: Vitest + React Testing Library
 
 ## 🙏 Acknowledgments
 
 - Inspired by the classic Magic 8 Ball toy
 - Built with modern web technologies
-- Powered by OpenAI's GPT models
+- Powered by Google Gemini AI
 
 ---
 
 Made with ✨ by a UI Frontend Engineer
 
-[View Live Demo](https://your-demo-url.vercel.app) • [Portfolio](https://your-portfolio.com)
+[View Live Demo](https://ai-fortune-teller-jade.vercel.app) • [Portfolio](https://victoriadobrov.dev/)
